@@ -132,8 +132,8 @@ lib LibGumbo
     value_end: GumboSourcePosition
   end
 
-  type GumboAllocatorFunction = Void*
-  type GumboDeallocatorFunction = Void*
+  type GumboAllocatorFunction = (Void*, LibC::SizeT) -> Void*
+  type GumboDeallocatorFunction = (Void*, Void*) -> Void
 
   struct GumboOptions
     allocator: GumboAllocatorFunction
