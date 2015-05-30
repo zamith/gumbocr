@@ -1,6 +1,6 @@
 # gumbocr
 
-TODO: Write a description here for library
+A straight forward wrapper for [Gumbo](https://github.com/google/gumbo-parser).
 
 ## Installation
 
@@ -8,7 +8,7 @@ Add it to `Projectfile`
 
 ```crystal
 deps do
-  github "[your-github-name]/gumbocr"
+  github "zamith/gumbocr"
 end
 ```
 
@@ -20,10 +20,6 @@ require "gumbocr"
 
 TODO: Write usage here for library
 
-## Development
-
-TODO: Write instructions for development
-
 ## Contributing
 
 1. Fork it ( https://github.com/[your-github-name]/gumbocr/fork )
@@ -34,4 +30,4 @@ TODO: Write instructions for development
 
 ## Contributors
 
-- [your-github-name](https://github.com/[your-github-name]) Zamith - creator, maintainer
+- [zamith](https://github.com/zamith) Zamith - creator, maintainer

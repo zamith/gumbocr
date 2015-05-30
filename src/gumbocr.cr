@@ -43,10 +43,6 @@ lib LibGumbo
     GUMBO_TAG_TT, GUMBO_TAG_RTC, GUMBO_TAG_UNKNOWN, GUMBO_TAG_LAST
   end
 
-  fun gumbo_tag_enum(tagname: UInt8*) : GumboTag
-  fun gumbo_tagn_enum(tagname: UInt8*, length: Int32) : GumboTag
-  fun gumbo_normalized_tagname(tag: GumboTag) : UInt8*
-
   struct GumboVector
     data: Void**
     length: Int32
@@ -117,6 +113,39 @@ lib LibGumbo
     offset: Int32
   end
 
+  enum GumboAttributeNamespaceEnum
+    GUMBO_ATTR_NAMESPACE_NONE,
+    GUMBO_ATTR_NAMESPACE_XLINK,
+    GUMBO_ATTR_NAMESPACE_XML,
+    GUMBO_ATTR_NAMESPACE_XMLNS
+  end
+
+  struct GumboAttribute
+    attr_namespace: GumboAttributeNamespaceEnum
+    name: UInt8*
+    original_name: GumboStringPiece
+    value: UInt8*
+    original_value: GumboStringPiece
+    name_start: GumboSourcePosition
+    name_end: GumboSourcePosition
+    value_start: GumboSourcePosition
+    value_end: GumboSourcePosition
+  end
+
+  type GumboAllocatorFunction = Void*
+  type GumboDeallocatorFunction = Void*
+
+  struct GumboOptions
+    allocator: GumboAllocatorFunction
+    deallocator: GumboDeallocatorFunction
+    userdata: Void*
+    tab_stop: Int32
+    stop_on_first_error: Bool
+    max_errors: Int32
+    fragment_context: GumboTag
+    fragment_namespace: GumboNamespaceEnum
+  end
+
   struct GumboElement
     children: GumboVector
     tag: GumboTag
@@ -154,15 +183,16 @@ lib LibGumbo
     errors: GumboVector
   end
 
+  fun gumbo_string_equals(str1: GumboStringPiece*, str2: GumboStringPiece*) : Bool
+  fun gumbo_string_equals_ignore_case(str1: GumboStringPiece*, str2: GumboStringPiece*) : Bool
+  fun gumbo_vector_index_of(vector: GumboVector*, element: Void*) : Int32
+  fun gumbo_normalized_tagname(tag: GumboTag) : UInt8*
+  fun gumbo_tag_from_original_text(text: GumboStringPiece*) : Void
+  fun gumbo_normalize_svg_tag(tagname: GumboStringPiece*) : UInt8*
+  fun gumbo_tag_enum(tagname: UInt8*) : GumboTag
+  fun gumbo_tagn_enum(tagname: UInt8*, length: Int32) : GumboTag
+  fun gumbo_get_attribute(attrs: GumboVector*, name: UInt8*) : GumboAttribute*
   fun gumbo_parse(buffer: UInt8*) : GumboOutput*
+  fun gumbo_parse_with_options(options: GumboOptions*, buffer: UInt8*, buffer_length: LibC::SizeT)
+  fun gumbo_destroy_output(options: GumboOptions*, output: GumboOutput*)
 end
-
-module Gumbocr
-  def self.get_tag(tagname)
-    LibGumbo.gumbo_tag_enum(tagname)
-  end
-end
-
-# puts Gumbocr.get_tag("html")
-# puts String.new(LibGumbo.gumbo_normalized_tagname(LibGumbo::GumboTag::GUMBO_TAG_HTML))
-puts LibGumbo.gumbo_parse("<h1>Hello, World!</h1>").value.document.value.type
